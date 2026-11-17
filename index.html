@@ -7,14 +7,24 @@
   <style>
     :root {
       --primary: #ff2a85;        /* Rosa Neon Vice City */
-      --primary-dark: #d91b6c;   /* Rosa escuro para hover */
-      --dark: #111114;           /* Preto da regata */
+      --primary-dark: #d91b6c;   /* Rosa escuro */
+      --dark: #111114;           /* Preto Vice */
       --light: #f8fafc;
       --gray: #64748b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body { background-color: #f1f5f9; color: var(--dark); padding-bottom: 80px; }
+    
+    body { 
+      background-image: url('1794881929236.jpg'); 
+      background-size: cover; 
+      background-position: center; 
+      background-repeat: no-repeat; 
+      background-attachment: fixed; 
+      color: var(--dark); 
+      padding-bottom: 80px; 
+      min-height: 100vh;
+    }
 
     header { 
       background: var(--dark); 
@@ -26,7 +36,8 @@
       position: sticky; 
       top: 0; 
       z-index: 10; 
-      border-bottom: 3px solid var(--primary); /* Linha rosa neon Vice */
+      border-bottom: 3px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     header h1 { font-size: 1.4rem; font-weight: 700; }
     .cart-btn { 
@@ -44,7 +55,17 @@
     .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 
-    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .card { 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(5px);
+      border-radius: 12px; 
+      overflow: hidden; 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
+      padding: 1rem; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 0.8rem; 
+    }
     .card img { width: 100%; height: 320px; object-fit: cover; border-radius: 8px; background-color: #e2e8f0; }
     .card h3 { font-size: 1.1rem; color: var(--dark); }
     .price { font-size: 1.25rem; font-weight: bold; color: var(--primary); }
@@ -56,7 +77,7 @@
     .btn-add:hover { background: #27272a; }
 
     /* Modal do Carrinho */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 1rem; z-index: 100; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 1rem; z-index: 100; }
     .modal-content { background: white; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 1.5rem; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; }
     .cart-item { border-bottom: 1px solid #f1f5f9; padding: 0.75rem 0; font-size: 0.9rem; }
@@ -125,7 +146,7 @@
       {
         id: "nba-vice-city-7",
         name: "Regata NBA Miami Heat Vice City - Cactus Jack / Nike",
-        price: 249.99,
+        price: 249.90,
         image: "Github-pic.jpg",
         sizes: ["P", "M", "G", "GG", "XGG"]
       }
