@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja do Daniel_orocha</title>
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: #f1f5f9; color: var(--dark); padding-bottom: 80px; }
+
+    header { background: var(--dark); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    .cart-btn { background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .card img { width: 100%; height: 320px; object-fit: cover; border-radius: 8px; }
+    .card h3 { font-size: 1.1rem; color: var(--dark); }
+    .price { font-size: 1.25rem; font-weight: bold; color: var(--primary-dark); }
+
+    .custom-group { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem; }
+    .custom-group select { padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
+
+    .btn-add { background: var(--dark); color: white; border: none; padding: 0.75rem; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+    .btn-add:hover { background: #1e293b; }
+
+    /* Modal do Carrinho */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; padding: 1rem; z-index: 100; }
+    .modal-content { background: white; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 1.5rem; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; }
+    .cart-item { border-bottom: 1px solid #f1f5f9; padding: 0.75rem 0; font-size: 0.9rem; }
+    .checkout-form { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+    .checkout-form label { font-size: 0.9rem; font-weight: bold; margin-top: 0.3rem; }
+    .checkout-form input, .checkout-form select { padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; }
+    .btn-send { background: #25d366; color: white; border: none; padding: 0.9rem; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 1rem; }
+    .btn-send:hover { background: #1eb956; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🏀 Loja do @daniel_orocha</h1>
+    <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho (<span id="cart-count">0</span>)</button>
+  </header>
+
+  <div class="container">
+    <div class="grid" id="products-grid"></div>
+  </div>
+
+  <!-- Modal do Carrinho -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Seu Carrinho</h2>
+        <button onclick="toggleCart()" style="border:none; background:none; font-size: 1.5rem; cursor:pointer;">&times;</button>
+      </div>
+      <div id="cart-items"></div>
+      <div style="margin-top: 1rem; font-weight: bold; font-size: 1.1rem; text-align: right;">
+        Total: R$ <span id="cart-total">0,00</span>
+      </div>
+
+      <div class="checkout-form">
+        <h3>Dados de Entrega & Pagamento</h3>
+        
+        <label for="cust-name">Nome Completo:</label>
+        <input type="text" id="cust-name" placeholder="Digite seu nome" required>
+        
+        <label for="cust-phone">WhatsApp / Telefone:</label>
+        <input type="tel" id="cust-phone" placeholder="(22) 99999-9999" required>
+        
+        <label for="cust-address">Endereço de Entrega:</label>
+        <input type="text" id="cust-address" placeholder="Rua, número, bairro e cidade" required>
+        
+        <label for="cust-payment">Forma de Pagamento:</label>
+        <select id="cust-payment" onchange="toggleTroco(this.value)">
+          <option value="Pix">⚡ Pix</option>
+          <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+          <option value="Cartão de Débito">💳 Cartão de Débito</option>
+          <option value="Dinheiro">💵 Dinheiro (na entrega)</option>
+        </select>
+
+        <div id="troco-box" style="display: none; flex-direction: column; gap: 0.3rem;">
+          <label for="cust-troco">Precisa de troco para quanto?</label>
+          <input type="text" id="cust-troco" placeholder="Ex: Troco para R$ 300,00 ou Não preciso">
+        </div>
+
+        <button class="btn-send" onclick="checkoutWhatsApp()">Enviar Pedido no WhatsApp 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      {
+        id: "nba-vice-city-7",
+        name: "Regata NBA Miami Heat Vice City - Cactus Jack / Nike",
+        price: 249.99,
+        image: "images (3).jpeg",
+        sizes: ["P", "M", "G", "GG", "XGG"]
+      }
+    ];
+
+    let cart = [];
+    const LOJA_WHATSAPP = "5522992264706";
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = products.map(p => `
+        <div class="card">
+          <img src="${p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <div class="price">R$ ${p.price.toFixed(2).replace('.', ',')}</div>
+          
+          <div class="custom-group">
+            <label>Tamanho:</label>
+            <select id="size-${p.id}">
+              ${p.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
+            </select>
+          </div>
+
+          <button class="btn-add" onclick="addToCart('${p.id}')">Adicionar ao Carrinho</button>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const size = document.getElementById(`size-${productId}`).value;
+
+      cart.push({
+        ...product,
+        size
+      });
+
+      updateCartUI();
+      toggleCart();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.length;
+      const cartItemsContainer = document.getElementById('cart-items');
+      
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p style="padding: 1rem 0; color: var(--gray);">Seu carrinho está vazio.</p>';
+        document.getElementById('cart-total').innerText = '0,00';
+        return;
+      }
+
+      const total = cart.reduce((acc, item) => acc + item.price, 0);
+      document.getElementById('cart-total').innerText = total.toFixed(2).replace('.', ',');
+
+      cartItemsContainer.innerHTML = cart.map((item, idx) => `
+        <div class="cart-item">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>${item.name}</strong>
+            <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">Remover</button>
+          </div>
+          <div>Tamanho: ${item.size} | Preço: R$ ${item.price.toFixed(2).replace('.', ',')}</div>
+        </div>
+      `).join('');
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleTroco(val) {
+      const trocoBox = document.getElementById('troco-box');
+      trocoBox.style.display = (val === 'Dinheiro') ? 'flex' : 'none';
+    }
+
+    function checkoutWhatsApp() {
+      if (cart.length === 0) return alert('Seu carrinho está vazio!');
+      
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+      const payment = document.getElementById('cust-payment').value;
+      const troco = document.getElementById('cust-troco').value.trim();
+
+      if (!name || !phone || !address) {
+        return alert('Por favor, preencha todos os campos de entrega.');
+      }
+
+      const total = cart.reduce((acc, item) => acc + item.price, 0);
+
+      let msg = `*NOVO PEDIDO - LOJA DO DANIEL_OROCHA* 🏀👕\n`;
+      msg += `-----------------------------------\n\n`;
+      
+      cart.forEach((item, i) => {
+        msg += `${i + 1}. *${item.name}*\n`;
+        msg += `   • Tamanho: ${item.size}\n`;
+        msg += `   • Valor: R$ ${item.price.toFixed(2).replace('.', ',')}\n\n`;
+      });
+
+      msg += `-----------------------------------\n`;
+      msg += `*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n`;
+      msg += `-----------------------------------\n\n`;
+      msg += `*DADOS DE ENTREGA & PAGAMENTO:*\n`;
+      msg += `👤 *Nome:* ${name}\n`;
+      msg += `📞 *WhatsApp:* ${phone}\n`;
+      msg += `📍 *Endereço:* ${address}\n`;
+      msg += `💳 *Forma de Pagamento:* ${payment}\n`;
+      if (payment === 'Dinheiro' && troco) {
+        msg += `💵 *Observação de Troco:* ${troco}\n`;
+      }
+
+      const url = `https://wa.me/${LOJA_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
