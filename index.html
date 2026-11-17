@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loja do Daniel_orocha</title>
+  <title>Loja do @daniel_orocha</title>
   <style>
     :root {
       --primary: #10b981;
@@ -24,7 +24,7 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 
     .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
-    .card img { width: 100%; height: 320px; object-fit: cover; border-radius: 8px; }
+    .card img { width: 100%; height: 320px; object-fit: cover; border-radius: 8px; background-color: #e2e8f0; }
     .card h3 { font-size: 1.1rem; color: var(--dark); }
     .price { font-size: 1.25rem; font-weight: bold; color: var(--primary-dark); }
 
@@ -104,9 +104,9 @@
       {
         id: "nba-vice-city-7",
         name: "Regata NBA Miami Heat Vice City - Cactus Jack / Nike",
-        price: 249.99,
+        price: 249.90,
         image: "Github-pic.jpg",
-        sizes: ["P", "M", "G"  "GG", "XGG"]
+        sizes: ["P", "M", "G", "GG", "XGG"]
       }
     ];
 
@@ -115,9 +115,10 @@
 
     function renderProducts() {
       const grid = document.getElementById('products-grid');
+      if (!grid) return;
       grid.innerHTML = products.map(p => `
         <div class="card">
-          <img src="${p.image}" alt="${p.name}">
+          <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=600&q=80';">
           <h3>${p.name}</h3>
           <div class="price">R$ ${p.price.toFixed(2).replace('.', ',')}</div>
           
@@ -225,6 +226,7 @@
       window.open(url, '_blank');
     }
 
+    document.addEventListener("DOMContentLoaded", renderProducts);
     renderProducts();
   </script>
 </body>
